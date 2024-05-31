@@ -4,40 +4,24 @@ fun main() {
 
 tailrec fun toBinaryString(
     value: UInt,
+    bitsRequired: UInt = 2u,
+    currentBit: UInt = bitsRequired,
     remaining: UInt = value,
     result: String = "",
-    bitsRequired: UInt = 2u,
-    currentBit: UInt = bitsRequired
-): String {
-    if (remaining < 2u) {
-        if (currentBit == 1u) {
-            return result + if (remaining == 1u) '1' else '0'
-        }
-
-        val nextBit = currentBit / 2u
-        return toBinaryString(
-            value,
-            remaining,
-            result + '0',
-            bitsRequired,
-            nextBit
+): String =
+    if (currentBit == 1u)
+        result + remaining.toString()
+    else if (value > bitsRequired)
+        toBinaryString(
+            value = value,
+            bitsRequired = bitsRequired * 2u
         )
-    }
-
-    if (value > bitsRequired) {
-        return toBinaryString(value, remaining, result, bitsRequired * 2u)
-    }
-
-    val isDivisibleByBit = remaining >= currentBit
-    val symbolToAdd = if (isDivisibleByBit) '1' else '0'
-    val nextRemaining = if (isDivisibleByBit) remaining - currentBit else remaining
-    val nextBit = currentBit / 2u
-    return toBinaryString(
-        value,
-        nextRemaining,
-        result + symbolToAdd,
-        bitsRequired,
-        nextBit
-    )
-}
+    else
+        toBinaryString(
+            value = value,
+            bitsRequired = bitsRequired,
+            currentBit = currentBit / 2u,
+            remaining = if (remaining >= currentBit) remaining - currentBit else remaining,
+            result = result + if (remaining >= currentBit) '1' else '0'
+        )
 
